@@ -12,6 +12,7 @@ import { EntityLinkBuilder } from "./entity_link_builder";
 import { UserConfigurationPersistence } from "./local_config_persistence";
 import { FireCMSPlugin } from "./plugins";
 import { CMSAnalyticsEvent } from "./analytics";
+import { FirebaseApp } from "firebase/app"
 
 /**
  * @category Models
@@ -35,7 +36,7 @@ export type CMSViewsBuilder = (params: {
  * @category Models
  */
 export type FireCMSProps<UserType extends User> = {
-
+    firebaseApp: FirebaseApp;
     /**
      * Use this function to return the components you want to render under
      * FireCMS

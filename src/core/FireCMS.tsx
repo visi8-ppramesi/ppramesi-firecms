@@ -24,6 +24,7 @@ import {
 } from "../hooks";
 import { CenteredView, ErrorView } from "./components";
 import { StorageSourceContext } from "./contexts/StorageSourceContext";
+import { FirebaseAppContext } from "./contexts/FirebaseAppContext";
 import {
     UserConfigurationPersistenceContext
 } from "./contexts/UserConfigurationPersistenceContext";
@@ -52,6 +53,7 @@ export function FireCMS<UserType extends User>(props: FireCMSProps<UserType>) {
 
     const modeController = useModeController();
     const {
+        firebaseApp,
         children,
         collections,
         views,
@@ -134,38 +136,41 @@ export function FireCMS<UserType extends User>(props: FireCMSProps<UserType>) {
     return (
         <ModeControllerContext.Provider value={modeController}>
             <FireCMSContextInstance.Provider value={context}>
-                <UserConfigurationPersistenceContext.Provider
-                    value={userConfigPersistence}>
-                    <StorageSourceContext.Provider
-                        value={storageSource}>
-                        <DataSourceContext.Provider
-                            value={dataSource}>
-                            <AuthControllerContext.Provider
-                                value={authController}>
-                                <SideDialogsControllerContext.Provider
-                                    value={sideDialogsController}>
-                                    <SideEntityControllerContext.Provider
-                                        value={sideEntityController}>
-                                        <NavigationContextInstance.Provider
-                                            value={navigation}>
-                                            <BreadcrumbsProvider>
-                                                <LocalizationProvider
-                                                    dateAdapter={AdapterDateFns}
-                                                    utils={DateFnsUtils}
-                                                    locale={dateUtilsLocale}>
-                                                    <FireCMSInternal
-                                                        loading={loading}>
-                                                        {children}
-                                                    </FireCMSInternal>
-                                                </LocalizationProvider>
-                                            </BreadcrumbsProvider>
-                                        </NavigationContextInstance.Provider>
-                                    </SideEntityControllerContext.Provider>
-                                </SideDialogsControllerContext.Provider>
-                            </AuthControllerContext.Provider>
-                        </DataSourceContext.Provider>
-                    </StorageSourceContext.Provider>
-                </UserConfigurationPersistenceContext.Provider>
+                <FirebaseAppContext.Provider
+                    value={firebaseApp}>
+                    <UserConfigurationPersistenceContext.Provider
+                        value={userConfigPersistence}>
+                        <StorageSourceContext.Provider
+                            value={storageSource}>
+                            <DataSourceContext.Provider
+                                value={dataSource}>
+                                <AuthControllerContext.Provider
+                                    value={authController}>
+                                    <SideDialogsControllerContext.Provider
+                                        value={sideDialogsController}>
+                                        <SideEntityControllerContext.Provider
+                                            value={sideEntityController}>
+                                            <NavigationContextInstance.Provider
+                                                value={navigation}>
+                                                <BreadcrumbsProvider>
+                                                    <LocalizationProvider
+                                                        dateAdapter={AdapterDateFns}
+                                                        utils={DateFnsUtils}
+                                                        locale={dateUtilsLocale}>
+                                                        <FireCMSInternal
+                                                            loading={loading}>
+                                                            {children}
+                                                        </FireCMSInternal>
+                                                    </LocalizationProvider>
+                                                </BreadcrumbsProvider>
+                                            </NavigationContextInstance.Provider>
+                                        </SideEntityControllerContext.Provider>
+                                    </SideDialogsControllerContext.Provider>
+                                </AuthControllerContext.Provider>
+                            </DataSourceContext.Provider>
+                        </StorageSourceContext.Provider>
+                    </UserConfigurationPersistenceContext.Provider>
+                </FirebaseAppContext.Provider>
             </FireCMSContextInstance.Provider>
         </ModeControllerContext.Provider>
     );

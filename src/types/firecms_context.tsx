@@ -12,6 +12,7 @@ import { SideDialogsController } from "./side_dialogs_controller";
 import { FireCMSPlugin } from "./plugins";
 import { CMSAnalyticsEvent } from "./analytics";
 import { FieldConfig } from "./field_config";
+import { FirebaseApp } from "firebase/app"
 
 /**
  * Context that includes the internal controllers and contexts used by the app.
@@ -21,7 +22,7 @@ import { FieldConfig } from "./field_config";
  * @see useFireCMSContext
  */
 export type FireCMSContext<UserType extends User = User, AuthControllerType extends AuthController<UserType> = AuthController<UserType>> = {
-
+    firebaseApp: FirebaseApp;
     /**
      * Format of the dates in the CMS.
      * Defaults to 'MMMM dd, yyyy, HH:mm:ss'

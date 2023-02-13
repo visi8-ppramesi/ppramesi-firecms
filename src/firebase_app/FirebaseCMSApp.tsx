@@ -165,6 +165,7 @@ export function FirebaseCMSApp({
                 <ModeControllerProvider
                     value={modeController}>
                     <FireCMS
+                        firebaseApp={firebaseApp}
                         collections={collections}
                         views={views}
                         authController={authController}
