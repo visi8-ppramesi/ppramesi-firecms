@@ -1,5 +1,6 @@
 import { EntityCollection } from "./collections";
-import { Entity, EntityStatus, EntityValues, } from "./entities";
+import { Entity, EntityStatus, EntityValues } from "./entities";
+import { SaveEntityProps } from "./datasource";
 import { FireCMSContext } from "./firecms_context";
 import { ResolvedEntityCollection } from "./resolved_entities";
 import { User } from "./user";
@@ -41,6 +42,13 @@ export interface EntityCallbacks<M extends Record<string, any> = any, UserType e
      */
     onPreSave?(entitySaveProps: EntityOnSaveProps<M, UserType>)
         : Promise<Partial<EntityValues<M>>> | Partial<EntityValues<M>>;
+
+    /**
+     * Callback used instead of saving entity, because sometimes you need to replace
+     * the functionality with some other custom shit.
+     * @param saveEntityProps
+     */
+    overrideSaveEntity?<M extends Record<string, any> = any>(saveEntityProps: SaveEntityProps<M>): Promise<Entity<M>>;
 
     /**
      * Callback used after the entity is deleted.

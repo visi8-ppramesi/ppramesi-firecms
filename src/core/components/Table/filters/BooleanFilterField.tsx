@@ -41,7 +41,6 @@ export function BooleanFilterField({
                                        setValue
                                    }: BooleanFieldProps) {
 
-
     function updateFilter(val?: boolean) {
         if (val !== undefined) {
             setValue(

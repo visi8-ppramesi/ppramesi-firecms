@@ -25,7 +25,7 @@ export function BreadcrumbUpdater({
     React.useEffect(() => {
         breadcrumbsContext.set({
             breadcrumbs: [{
-                title: title,
+                title,
                 url: path
             }]
         });

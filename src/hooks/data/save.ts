@@ -102,14 +102,7 @@ export async function saveEntityWithCallbacks<M extends Record<string, any>, Use
         updatedValues = values;
     }
 
-    return dataSource.saveEntity({
-        collection,
-        path: resolvedPath,
-        entityId,
-        values: updatedValues,
-        previousValues,
-        status
-    }).then((entity) => {
+    const thenFunction = (entity: Entity<M>) => {
         try {
             if (callbacks?.onSaveSuccess) {
                 const resolvedCollection = resolveCollection<M>({
@@ -136,28 +129,108 @@ export async function saveEntityWithCallbacks<M extends Record<string, any>, Use
         }
         if (onSaveSuccess)
             onSaveSuccess(entity);
-    })
-        .catch((e) => {
-            if (callbacks?.onSaveFailure) {
+    }
 
-                const resolvedCollection = resolveCollection<M>({
-                    collection,
-                    path,
-                    values: updatedValues as EntityValues<M>,
-                    entityId,
-                    fields: context.fields
-                });
-                callbacks.onSaveFailure({
-                    collection: resolvedCollection,
-                    path,
-                    resolvedPath,
-                    entityId,
-                    values: updatedValues,
-                    previousValues,
-                    status,
-                    context
-                });
-            }
-            if (onSaveFailure) onSaveFailure(e);
-        });
+    const catchFunction = (e: any) => {
+        if (callbacks?.onSaveFailure) {
+            const resolvedCollection = resolveCollection<M>({
+                collection,
+                path,
+                values: updatedValues as EntityValues<M>,
+                entityId,
+                fields: context.fields
+            });
+            callbacks.onSaveFailure({
+                collection: resolvedCollection,
+                path,
+                resolvedPath,
+                entityId,
+                values: updatedValues,
+                previousValues,
+                status,
+                context
+            });
+        }
+        if (onSaveFailure) onSaveFailure(e);
+    }
+
+    if (callbacks?.overrideSaveEntity) {
+        return callbacks.overrideSaveEntity({
+            collection,
+            path: resolvedPath,
+            entityId,
+            values: updatedValues,
+            previousValues,
+            status
+        }).then(thenFunction)
+            .catch(catchFunction);
+    } else {
+        return dataSource.saveEntity({
+            collection,
+            path: resolvedPath,
+            entityId,
+            values: updatedValues,
+            previousValues,
+            status
+        }).then(thenFunction)
+            .catch(catchFunction);
+    }
+    // return dataSource.saveEntity({
+    //     collection,
+    //     path: resolvedPath,
+    //     entityId,
+    //     values: updatedValues,
+    //     previousValues,
+    //     status
+    // }).then((entity) => {
+    //     try {
+    //         if (callbacks?.onSaveSuccess) {
+    //             const resolvedCollection = resolveCollection<M>({
+    //                 collection,
+    //                 path,
+    //                 values: updatedValues as EntityValues<M>,
+    //                 entityId,
+    //                 fields: context.fields
+    //             });
+    //             callbacks.onSaveSuccess({
+    //                 collection: resolvedCollection,
+    //                 path,
+    //                 resolvedPath,
+    //                 entityId: entity.id,
+    //                 values: updatedValues,
+    //                 previousValues,
+    //                 status,
+    //                 context
+    //             });
+    //         }
+    //     } catch (e: any) {
+    //         if (onSaveSuccessHookError)
+    //             onSaveSuccessHookError(e);
+    //     }
+    //     if (onSaveSuccess)
+    //         onSaveSuccess(entity);
+    // })
+    //     .catch((e) => {
+    //         if (callbacks?.onSaveFailure) {
+
+    //             const resolvedCollection = resolveCollection<M>({
+    //                 collection,
+    //                 path,
+    //                 values: updatedValues as EntityValues<M>,
+    //                 entityId,
+    //                 fields: context.fields
+    //             });
+    //             callbacks.onSaveFailure({
+    //                 collection: resolvedCollection,
+    //                 path,
+    //                 resolvedPath,
+    //                 entityId,
+    //                 values: updatedValues,
+    //                 previousValues,
+    //                 status,
+    //                 context
+    //             });
+    //         }
+    //         if (onSaveFailure) onSaveFailure(e);
+    //     });
 }
