@@ -16,7 +16,7 @@ export interface EntityCallbacks<M extends Record<string, any> = any, UserType e
      * Callback used instead of collection fetch
      * @param FetchCollectionProps
      */
-    overrideCollectionFetch?<M>({
+    overrideCollectionFetch?({
             path,
             collection,
             filter,
@@ -32,7 +32,7 @@ export interface EntityCallbacks<M extends Record<string, any> = any, UserType e
      * Callback used instead of entity fetch
      * @param FetchEntityProps
      */
-    overrideEntityFetch?<M extends Record<string, any> = any>({
+    overrideEntityFetch?({
             path,
             entityId,
             collection

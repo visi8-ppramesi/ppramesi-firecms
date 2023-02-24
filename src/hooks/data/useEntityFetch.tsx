@@ -102,7 +102,7 @@ export function useEntityFetch<M extends Record<string, any>, UserType extends U
                 });
             } else {
                 if (collection.callbacks?.overrideEntityFetch) {
-                    collection.callbacks.overrideEntityFetch<M>({
+                    collection.callbacks.overrideEntityFetch({
                         path,
                         entityId,
                         collection

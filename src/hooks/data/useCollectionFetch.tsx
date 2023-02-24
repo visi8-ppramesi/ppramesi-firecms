@@ -139,7 +139,7 @@ export function useCollectionFetch<M extends Record<string, any>, UserType exten
             });
         } else {
             if (collection.callbacks?.overrideCollectionFetch) {
-                collection.callbacks.overrideCollectionFetch<M>({
+                collection.callbacks.overrideCollectionFetch({
                     path,
                     collection,
                     searchString,
