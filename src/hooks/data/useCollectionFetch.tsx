@@ -124,7 +124,7 @@ export function useCollectionFetch<M extends Record<string, any>, UserType exten
             setDataLoadingError(error);
         };
 
-        if (dataSource.listenCollection) {
+        if (dataSource.listenCollection && !collection.callbacks?.overrideCollectionFetch) {
             return dataSource.listenCollection<M>({
                 path,
                 collection,
@@ -138,18 +138,33 @@ export function useCollectionFetch<M extends Record<string, any>, UserType exten
                 order: currentSort
             });
         } else {
-            dataSource.fetchCollection<M>({
-                path,
-                collection,
-                searchString,
-                filter: filterValues,
-                limit: itemCount,
-                startAfter: undefined,
-                orderBy: sortByProperty,
-                order: currentSort
-            })
-                .then(onEntitiesUpdate)
-                .catch(onError);
+            if (collection.callbacks?.overrideCollectionFetch) {
+                collection.callbacks.overrideCollectionFetch<M>({
+                    path,
+                    collection,
+                    searchString,
+                    filter: filterValues,
+                    limit: itemCount,
+                    startAfter: undefined,
+                    orderBy: sortByProperty,
+                    order: currentSort
+                })
+                    .then(onEntitiesUpdate)
+                    .catch(onError);
+            }else{
+                dataSource.fetchCollection<M>({
+                    path,
+                    collection,
+                    searchString,
+                    filter: filterValues,
+                    limit: itemCount,
+                    startAfter: undefined,
+                    orderBy: sortByProperty,
+                    order: currentSort
+                })
+                    .then(onEntitiesUpdate)
+                    .catch(onError);
+            }
             return () => {
             };
         }

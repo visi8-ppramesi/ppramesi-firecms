@@ -80,9 +80,8 @@ export async function deleteEntityWithCallbacks<M extends Record<string, any>, U
             return false;
         }
     }
-    return dataSource.deleteEntity({
-        entity
-    }).then(() => {
+
+    const thenFunction = () => {
         onDeleteSuccess && onDeleteSuccess(entity);
         try {
             if (callbacks?.onDelete) {
@@ -94,8 +93,40 @@ export async function deleteEntityWithCallbacks<M extends Record<string, any>, U
                 onDeleteSuccessHookError(entity, e);
             return false;
         }
-    }).catch((e) => {
+    }
+
+    const catchFunction = (e: any) => {
         if (onDeleteFailure) onDeleteFailure(entity, e);
         return false;
-    });
+    }
+
+    if (callbacks?.overrideDeleteEntity) {
+        return callbacks.overrideDeleteEntity({ entity })
+            .then(thenFunction)
+            .catch(catchFunction)
+    } else {
+        return dataSource.deleteEntity({
+            entity
+        }).then(thenFunction)
+            .catch(catchFunction)
+    }
+
+    // return dataSource.deleteEntity({
+    //     entity
+    // }).then(() => {
+    //     onDeleteSuccess && onDeleteSuccess(entity);
+    //     try {
+    //         if (callbacks?.onDelete) {
+    //             callbacks.onDelete(entityDeleteProps);
+    //         }
+    //         return true;
+    //     } catch (e: any) {
+    //         if (onDeleteSuccessHookError)
+    //             onDeleteSuccessHookError(entity, e);
+    //         return false;
+    //     }
+    // }).catch((e) => {
+    //     if (onDeleteFailure) onDeleteFailure(entity, e);
+    //     return false;
+    // });
 }

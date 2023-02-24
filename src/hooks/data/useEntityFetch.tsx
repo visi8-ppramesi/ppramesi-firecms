@@ -92,7 +92,7 @@ export function useEntityFetch<M extends Record<string, any>, UserType extends U
             return () => {
             };
         } else if (entityId && path && collection) {
-            if (dataSource.listenEntity) {
+            if (dataSource.listenEntity && !collection.callbacks?.overrideEntityFetch) {
                 return dataSource.listenEntity<M>({
                     path,
                     entityId,
@@ -101,13 +101,23 @@ export function useEntityFetch<M extends Record<string, any>, UserType extends U
                     onError
                 });
             } else {
-                dataSource.fetchEntity<M>({
-                    path,
-                    entityId,
-                    collection
-                })
-                    .then(onEntityUpdate)
-                    .catch(onError);
+                if (collection.callbacks?.overrideEntityFetch) {
+                    collection.callbacks.overrideEntityFetch<M>({
+                        path,
+                        entityId,
+                        collection
+                    })
+                        .then(onEntityUpdate)
+                        .catch(onError);
+                } else {
+                    dataSource.fetchEntity<M>({
+                        path,
+                        entityId,
+                        collection
+                    })
+                        .then(onEntityUpdate)
+                        .catch(onError);
+                }
                 return () => {
                 };
             }

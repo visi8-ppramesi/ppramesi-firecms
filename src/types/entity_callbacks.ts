@@ -1,6 +1,6 @@
 import { EntityCollection } from "./collections";
 import { Entity, EntityStatus, EntityValues } from "./entities";
-import { SaveEntityProps } from "./datasource";
+import { SaveEntityProps, DeleteEntityProps, FetchCollectionProps, FetchEntityProps } from "./datasource";
 import { FireCMSContext } from "./firecms_context";
 import { ResolvedEntityCollection } from "./resolved_entities";
 import { User } from "./user";
@@ -12,6 +12,32 @@ import { User } from "./user";
  * @category Models
  */
 export interface EntityCallbacks<M extends Record<string, any> = any, UserType extends User = User> {
+    /**
+     * Callback used instead of collection fetch
+     * @param FetchCollectionProps
+     */
+    overrideCollectionFetch?<M>({
+            path,
+            collection,
+            filter,
+            limit,
+            startAfter,
+            orderBy,
+            order,
+            searchString
+        }: FetchCollectionProps<M>
+    ): Promise<Entity<M>[]>;
+
+    /**
+     * Callback used instead of entity fetch
+     * @param FetchEntityProps
+     */
+    overrideEntityFetch?<M extends Record<string, any> = any>({
+            path,
+            entityId,
+            collection
+        }: FetchEntityProps<M>
+    ): Promise<Entity<M> | undefined>;
 
     /**
      * Callback used after fetching data
@@ -58,6 +84,17 @@ export interface EntityCallbacks<M extends Record<string, any> = any, UserType e
      * @param entityDeleteProps
      */
     onPreDelete?(entityDeleteProps: EntityOnDeleteProps<M, UserType>): void;
+
+    /**
+     * Callback used instead of deleting entity.
+     *
+     * @param entityDeleteProps
+     */
+    overrideDeleteEntity?<M extends Record<string, any> = any>(
+        {
+            entity
+        }: DeleteEntityProps<M>
+    ): Promise<void>;
 
     /**
      * Callback used after the entity is deleted.
