@@ -9,6 +9,32 @@ const locales: EnumValues = {
     "es-419": "Spanish (South America)"
 };
 
+export const subProductsBCollection = buildCollection({
+    path: "subproducts_b",
+    name: "Subproducts",
+    singularName: "Subproduct",
+    alias: "sp",
+    properties: {
+        name: buildProperty({
+            dataType: "string",
+            name: "Name",
+        })
+    }
+});
+
+export const subProductsACollection = buildCollection({
+    path: "subproducts_a",
+    name: "Subproducts",
+    singularName: "Subproduct",
+    alias: "sp",
+    properties: {
+        name: buildProperty({
+            dataType: "string",
+            name: "Name",
+        })
+    }
+});
+
 
 export const productsCollection = buildCollection({
     path: "products",
@@ -20,6 +46,10 @@ export const productsCollection = buildCollection({
             name: "Test custom view",
             builder: ({}) => undefined
         }
+    ],
+    subcollections: [
+        subProductsACollection,
+        subProductsBCollection
     ],
     properties: {
         name: buildProperty({
@@ -161,7 +191,6 @@ export const productsCollection = buildCollection({
             name: "Added on",
             autoValue: "on_create"
         })
-
     },
 });
 
@@ -275,9 +304,26 @@ export const usersCollection = buildCollection({
     }
 });
 
+export const refToSubcolsCollection = buildCollection({
+    name: "refs_to_subcollection",
+    path: "refs",
+    properties: {
+        subproducts: buildProperty({
+            name: "Subproduct",
+            dataType: "array",
+            of: {
+                name: "sub",
+                dataType: "reference",
+                path: "users/123/products/pid/subproducts_a"
+            }
+        })
+    }
+});
+
 export const siteConfig: FirebaseCMSAppProps = {
     name: "Test site",
     collections: [
+        refToSubcolsCollection,
         buildCollection({
             ...productsCollection,
             path: "products",

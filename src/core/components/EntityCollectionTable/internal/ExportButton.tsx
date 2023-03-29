@@ -133,11 +133,21 @@ export function ExportButton<M extends Record<string, any>, UserType extends Use
         if (!open) return;
 
         setDataLoading(true);
-        dataSource.fetchCollection<M>({
-            path,
-            collection,
-            limit: fetchLargeDataAccepted ? undefined : INITIAL_DOCUMENTS_LIMIT
-        })
+        let fetcher: Promise<Entity<M>[]>;
+        if (collection.callbacks?.overrideCollectionFetch) {
+            fetcher = collection.callbacks.overrideCollectionFetch({
+                path,
+                collection,
+                limit: fetchLargeDataAccepted ? undefined : INITIAL_DOCUMENTS_LIMIT,
+            })
+        }else{
+            fetcher = dataSource.fetchCollection<M>({
+                path,
+                collection,
+                limit: fetchLargeDataAccepted ? undefined : INITIAL_DOCUMENTS_LIMIT
+            })
+        }
+        fetcher
             .then(updateEntities)
             .catch(setDataLoadingError)
             .finally(() => setDataLoading(false));

@@ -123,7 +123,6 @@ export function ReferenceSelectionView<M extends Record<string, any>>(
     const [entitiesDisplayedFirst, setEntitiesDisplayedFirst] = useState<Entity<any>[]>([]);
 
     const selectionController = useSelectionController();
-
     /**
      * Fetch initially selected ids
      */
@@ -131,12 +130,19 @@ export function ReferenceSelectionView<M extends Record<string, any>>(
         let unmounted = false;
         if (selectedEntityIds && collection) {
             Promise.all(
-                selectedEntityIds.map((entityId) =>
-                    dataSource.fetchEntity({
-                        path: fullPath,
-                        entityId,
-                        collection
-                    })))
+                selectedEntityIds.map((entityId) => 
+                    (collection.callbacks?.overrideEntityFetch ? 
+                        collection.callbacks.overrideEntityFetch({
+                            path: fullPath,
+                            entityId,
+                            collection
+                        }) : 
+                        dataSource.fetchEntity({
+                            path: fullPath,
+                            entityId,
+                            collection
+                        })
+                    )))
                 .then((entities) => {
                     if (!unmounted) {
                         const result = entities.filter(e => e !== undefined) as Entity<any>[];

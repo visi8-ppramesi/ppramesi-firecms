@@ -89,15 +89,31 @@ export function resolveNavigationFrom<M extends Record<string, any>, UserType ex
                 if (!collection) {
                     throw Error(`No collection defined in the navigation for the entity with path ${entry.path}`);
                 }
-                return dataSource.fetchEntity({
-                    path: entry.path,
-                    entityId: entry.entityId,
-                    collection
-                })
+                return (collection.callbacks?.overrideEntityFetch ? 
+                    collection.callbacks.overrideEntityFetch({
+                        path: entry.path,
+                        entityId: entry.entityId,
+                        collection
+                    }) : 
+                    dataSource.fetchEntity({
+                        path: entry.path,
+                        entityId: entry.entityId,
+                        collection
+                    })
+                )
                     .then((entity) => {
                         if (!entity) return undefined;
                         return { ...entry, entity };
                     });
+                // return dataSource.fetchEntity({
+                //     path: entry.path,
+                //     entityId: entry.entityId,
+                //     collection
+                // })
+                //     .then((entity) => {
+                //         if (!entity) return undefined;
+                //         return { ...entry, entity };
+                //     });
             } else if (entry.type === "custom_view") {
                 return Promise.resolve(entry);
             } else {
