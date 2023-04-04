@@ -37,7 +37,7 @@ export function useInitialiseFirebase({
                                           onFirebaseInit,
                                           name
                                       }: {
-    onFirebaseInit?: ((config: object) => void) | undefined,
+    onFirebaseInit?: ((config: object, firebaseApp: FirebaseApp) => void) | undefined,
     firebaseConfig: Record<string, unknown> | undefined,
     name?: string;
 }): InitialiseFirebaseResult {
@@ -52,7 +52,7 @@ export function useInitialiseFirebase({
             setConfigError(undefined);
             setFirebaseConfigLoading(false);
             if (onFirebaseInit)
-                onFirebaseInit(config);
+                onFirebaseInit(config, initialisedFirebaseApp);
             setFirebaseApp(initialisedFirebaseApp);
         } catch (e: any) {
             console.error("Error initialising Firebase", e);
