@@ -11,6 +11,7 @@ import {
     useUserConfigurationPersistence
 } from "./useUserConfigurationPersistence";
 import { useFirebaseAppContext } from "./useFirebaseAppContext"
+import { useAppCheckContext } from "./useAppCheckContext"
 
 export const FireCMSContextInstance = createContext<Partial<FireCMSContext>>({
     sideDialogsController: {} as any,
@@ -40,6 +41,7 @@ export const useFireCMSContext = <UserType extends User = User, AuthControllerTy
     const sideEntityController = useSideEntityController();
     const navigation = useNavigationContext();
     const firebaseApp = useFirebaseAppContext();
+    const appCheck = useAppCheckContext();
     const dataSource = useDataSource();
     const storageSource = useStorageSource();
     const snackbarController = useSnackbarController();
@@ -55,7 +57,8 @@ export const useFireCMSContext = <UserType extends User = User, AuthControllerTy
         dataSource,
         storageSource,
         snackbarController,
-        userConfigPersistence
+        userConfigPersistence,
+        appCheck
     }
 
 };

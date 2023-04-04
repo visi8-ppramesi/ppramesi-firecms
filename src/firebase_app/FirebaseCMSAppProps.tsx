@@ -19,6 +19,8 @@ import {
 } from "./types/auth";
 import { FirebaseLoginViewProps } from "./components/FirebaseLoginView";
 import { useNavigationContext } from "../hooks";
+import { FirebaseApp } from "firebase/app";
+import { AppCheck } from "firebase/app-check";
 
 /**
  * Main entry point that defines the CMS configuration
@@ -99,7 +101,7 @@ export type FirebaseCMSAppProps = {
      * using the local emulator or retrieving the used configuration.
      * @param config
      */
-    onFirebaseInit?: (config: object) => void;
+    onFirebaseInit?: (config: object, firebaseApp: FirebaseApp) => void;
 
     /**
      * Primary color of the theme of the CMS
@@ -180,4 +182,8 @@ export type FirebaseCMSAppProps = {
      */
     onAnalyticsEvent?: (event: CMSAnalyticsEvent, data?: object) => void;
 
+    /**
+     * AppCheck
+     */
+    appCheck?: AppCheck;
 };

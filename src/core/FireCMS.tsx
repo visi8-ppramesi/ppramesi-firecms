@@ -38,6 +38,7 @@ import {
     SideDialogsControllerContext
 } from "./contexts/SideDialogsControllerContext";
 import { useTraceUpdate } from "./util/useTraceUpdate";
+import { AppCheckContext } from "./contexts/AppCheckContext";
 
 const DEFAULT_COLLECTION_PATH = "/c";
 
@@ -69,7 +70,8 @@ export function FireCMS<UserType extends User>(props: FireCMSProps<UserType>) {
         baseCollectionPath,
         plugins,
         onAnalyticsEvent,
-        fields
+        fields,
+        appCheck
     } = props;
 
     const usedBasePath = basePath ?? "/";
@@ -135,6 +137,7 @@ export function FireCMS<UserType extends User>(props: FireCMSProps<UserType>) {
 
     return (
         <ModeControllerContext.Provider value={modeController}>
+            
             <FireCMSContextInstance.Provider value={context}>
                 <FirebaseAppContext.Provider
                     value={firebaseApp}>
@@ -152,17 +155,33 @@ export function FireCMS<UserType extends User>(props: FireCMSProps<UserType>) {
                                             value={sideEntityController}>
                                             <NavigationContextInstance.Provider
                                                 value={navigation}>
-                                                <BreadcrumbsProvider>
-                                                    <LocalizationProvider
-                                                        dateAdapter={AdapterDateFns}
-                                                        utils={DateFnsUtils}
-                                                        locale={dateUtilsLocale}>
-                                                        <FireCMSInternal
-                                                            loading={loading}>
-                                                            {children}
-                                                        </FireCMSInternal>
-                                                    </LocalizationProvider>
-                                                </BreadcrumbsProvider>
+                                                {appCheck ? 
+                                                    <AppCheckContext.Provider
+                                                        value={appCheck}>
+                                                        <BreadcrumbsProvider>
+                                                            <LocalizationProvider
+                                                                dateAdapter={AdapterDateFns}
+                                                                utils={DateFnsUtils}
+                                                                locale={dateUtilsLocale}>
+                                                                <FireCMSInternal
+                                                                    loading={loading}>
+                                                                    {children}
+                                                                </FireCMSInternal>
+                                                            </LocalizationProvider>
+                                                        </BreadcrumbsProvider>
+                                                    </AppCheckContext.Provider> :
+                                                    <BreadcrumbsProvider>
+                                                        <LocalizationProvider
+                                                            dateAdapter={AdapterDateFns}
+                                                            utils={DateFnsUtils}
+                                                            locale={dateUtilsLocale}>
+                                                            <FireCMSInternal
+                                                                loading={loading}>
+                                                                {children}
+                                                            </FireCMSInternal>
+                                                        </LocalizationProvider>
+                                                    </BreadcrumbsProvider>
+                                                }
                                             </NavigationContextInstance.Provider>
                                         </SideEntityControllerContext.Provider>
                                     </SideDialogsControllerContext.Provider>

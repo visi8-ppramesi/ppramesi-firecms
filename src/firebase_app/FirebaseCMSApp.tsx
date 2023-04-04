@@ -72,7 +72,8 @@ export function FirebaseCMSApp({
                                    baseCollectionPath,
                                    LoginView,
                                    onAnalyticsEvent,
-                                   fields
+                                   fields,
+                                   appCheck
                                }: FirebaseCMSAppProps) {
 
     /**
@@ -165,6 +166,7 @@ export function FirebaseCMSApp({
                 <ModeControllerProvider
                     value={modeController}>
                     <FireCMS
+                        appCheck={appCheck}
                         firebaseApp={firebaseApp}
                         collections={collections}
                         views={views}

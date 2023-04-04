@@ -13,6 +13,7 @@ import { UserConfigurationPersistence } from "./local_config_persistence";
 import { FireCMSPlugin } from "./plugins";
 import { CMSAnalyticsEvent } from "./analytics";
 import { FirebaseApp } from "firebase/app"
+import { AppCheck } from "firebase/app-check";
 
 /**
  * @category Models
@@ -145,5 +146,10 @@ export type FireCMSProps<UserType extends User> = {
      * Callback used to get analytics events from the CMS
      */
     onAnalyticsEvent?: (event: CMSAnalyticsEvent, data?: object) => void;
+
+    /**
+     * AppCheck
+     */
+    appCheck?: AppCheck;
 
 };

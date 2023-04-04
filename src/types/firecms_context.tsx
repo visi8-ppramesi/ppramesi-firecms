@@ -13,6 +13,7 @@ import { FireCMSPlugin } from "./plugins";
 import { CMSAnalyticsEvent } from "./analytics";
 import { FieldConfig } from "./field_config";
 import { FirebaseApp } from "firebase/app"
+import { AppCheck } from "firebase/app-check";
 
 /**
  * Context that includes the internal controllers and contexts used by the app.
@@ -99,4 +100,6 @@ export type FireCMSContext<UserType extends User = User, AuthControllerType exte
      * the `fieldConfig` prop of a property in a collection.
      */
     fields?: Record<string, FieldConfig>;
+
+    appCheck?: AppCheck;
 };
