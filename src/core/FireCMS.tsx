@@ -23,17 +23,17 @@ import {
     useSnackbarController
 } from "../hooks";
 import { CenteredView, ErrorView } from "./components";
-import { StorageSourceContext } from "./contexts/StorageSourceContext";
-import { FirebaseAppContext } from "./contexts/FirebaseAppContext";
+// import { StorageSourceContext } from "./contexts/StorageSourceContext";
+// import { FirebaseAppContext } from "./contexts/FirebaseAppContext";
 import {
     UserConfigurationPersistenceContext
 } from "./contexts/UserConfigurationPersistenceContext";
-import { DataSourceContext } from "./contexts/DataSourceContext";
+// import { DataSourceContext } from "./contexts/DataSourceContext";
 import {
     SideEntityControllerContext
 } from "./contexts/SideEntityControllerContext";
 import { NavigationContextInstance } from "./contexts/NavigationContext";
-import { AuthControllerContext } from "./contexts/AuthControllerContext";
+// import { AuthControllerContext } from "./contexts/AuthControllerContext";
 import {
     SideDialogsControllerContext
 } from "./contexts/SideDialogsControllerContext";
@@ -139,16 +139,16 @@ export function FireCMS<UserType extends User>(props: FireCMSProps<UserType>) {
         <ModeControllerContext.Provider value={modeController}>
             
             <FireCMSContextInstance.Provider value={context}>
-                <FirebaseAppContext.Provider
-                    value={firebaseApp}>
+                {/* <FirebaseAppContext.Provider
+                    value={firebaseApp}> */}
                     <UserConfigurationPersistenceContext.Provider
                         value={userConfigPersistence}>
-                        <StorageSourceContext.Provider
-                            value={storageSource}>
-                            <DataSourceContext.Provider
-                                value={dataSource}>
-                                <AuthControllerContext.Provider
-                                    value={authController}>
+                        {/* <StorageSourceContext.Provider
+                            value={storageSource}> */}
+                            {/* <DataSourceContext.Provider
+                                value={dataSource}> */}
+                                {/* <AuthControllerContext.Provider
+                                    value={authController}> */}
                                     <SideDialogsControllerContext.Provider
                                         value={sideDialogsController}>
                                         <SideEntityControllerContext.Provider
@@ -185,11 +185,11 @@ export function FireCMS<UserType extends User>(props: FireCMSProps<UserType>) {
                                             </NavigationContextInstance.Provider>
                                         </SideEntityControllerContext.Provider>
                                     </SideDialogsControllerContext.Provider>
-                                </AuthControllerContext.Provider>
-                            </DataSourceContext.Provider>
-                        </StorageSourceContext.Provider>
+                                {/* </AuthControllerContext.Provider> */}
+                            {/* </DataSourceContext.Provider> */}
+                        {/* </StorageSourceContext.Provider> */}
                     </UserConfigurationPersistenceContext.Provider>
-                </FirebaseAppContext.Provider>
+                {/* </FirebaseAppContext.Provider> */}
             </FireCMSContextInstance.Provider>
         </ModeControllerContext.Provider>
     );
