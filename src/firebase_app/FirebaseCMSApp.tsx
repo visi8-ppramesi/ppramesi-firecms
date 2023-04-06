@@ -26,10 +26,6 @@ import { FirebaseLoginView } from "./components/FirebaseLoginView";
 import { FirebaseAuthController } from "./types/auth";
 import { useValidateAuthenticator } from "./hooks/useValidateAuthenticator";
 import { useBrowserTitleAndIcon } from "../hooks";
-import { FirebaseAppContext } from "../core/contexts/FirebaseAppContext";
-import { StorageSourceContext } from "../core/contexts/StorageSourceContext";
-import { DataSourceContext } from "../core/contexts/DataSourceContext";
-import { AuthControllerContext } from "../core/contexts/AuthControllerContext";
 
 const DEFAULT_SIGN_IN_OPTIONS = [
     GoogleAuthProvider.PROVIDER_ID
@@ -167,78 +163,66 @@ export function FirebaseCMSApp({
     return (
         <BrowserRouter basename={basePath}>
             <SnackbarProvider>
-                <FirebaseAppContext.Provider
-                    value={firebaseApp}>
-                        <StorageSourceContext.Provider
-                            value={storageSource}>
-                            <DataSourceContext.Provider
-                                value={dataSource}>
-                                <AuthControllerContext.Provider
-                                    value={authController}>
-                                    <ModeControllerProvider
-                                        value={modeController}>
-                                        <FireCMS
-                                            appCheck={appCheck}
+                <ModeControllerProvider
+                    value={modeController}>
+                    <FireCMS
+                        appCheck={appCheck}
+                        firebaseApp={firebaseApp}
+                        collections={collections}
+                        views={views}
+                        authController={authController}
+                        userConfigPersistence={userConfigPersistence}
+                        collectionOverrideHandler={collectionOverrideHandler}
+                        dateTimeFormat={dateTimeFormat}
+                        dataSource={dataSource}
+                        storageSource={storageSource}
+                        entityLinkBuilder={({ entity }) => `https://console.firebase.google.com/project/${firebaseApp.options.projectId}/firestore/data/${entity.path}/${entity.id}`}
+                        locale={locale}
+                        basePath={basePath}
+                        baseCollectionPath={baseCollectionPath}
+                        onAnalyticsEvent={onAnalyticsEvent}
+                        fields={fields}>
+                        {({ context, loading }) => {
+
+                            let component;
+                            if (loading || authLoading) {
+                                component = <CircularProgressCenter/>;
+                            } else {
+                                const usedLogo = modeController.mode === "dark" && logoDark ? logoDark : logo;
+                                if (!canAccessMainView) {
+                                    const LoginViewUsed = LoginView ?? FirebaseLoginView;
+                                    component = (
+                                        <LoginViewUsed
+                                            logo={usedLogo}
+                                            allowSkipLogin={allowSkipLogin}
+                                            signInOptions={signInOptions ?? DEFAULT_SIGN_IN_OPTIONS}
                                             firebaseApp={firebaseApp}
-                                            collections={collections}
-                                            views={views}
                                             authController={authController}
-                                            userConfigPersistence={userConfigPersistence}
-                                            collectionOverrideHandler={collectionOverrideHandler}
-                                            dateTimeFormat={dateTimeFormat}
-                                            dataSource={dataSource}
-                                            storageSource={storageSource}
-                                            entityLinkBuilder={({ entity }) => `https://console.firebase.google.com/project/${firebaseApp.options.projectId}/firestore/data/${entity.path}/${entity.id}`}
-                                            locale={locale}
-                                            basePath={basePath}
-                                            baseCollectionPath={baseCollectionPath}
-                                            onAnalyticsEvent={onAnalyticsEvent}
-                                            fields={fields}>
-                                            {({ context, loading }) => {
-                    
-                                                let component;
-                                                if (loading || authLoading) {
-                                                    component = <CircularProgressCenter/>;
-                                                } else {
-                                                    const usedLogo = modeController.mode === "dark" && logoDark ? logoDark : logo;
-                                                    if (!canAccessMainView) {
-                                                        const LoginViewUsed = LoginView ?? FirebaseLoginView;
-                                                        component = (
-                                                            <LoginViewUsed
-                                                                logo={usedLogo}
-                                                                allowSkipLogin={allowSkipLogin}
-                                                                signInOptions={signInOptions ?? DEFAULT_SIGN_IN_OPTIONS}
-                                                                firebaseApp={firebaseApp}
-                                                                authController={authController}
-                                                                notAllowedError={notAllowedError}/>
-                                                        );
-                                                    } else {
-                                                        component = (
-                                                            <Scaffold
-                                                                name={name}
-                                                                logo={usedLogo}
-                                                                toolbarExtraWidget={toolbarExtraWidget}>
-                                                                <NavigationRoutes
-                                                                    HomePage={HomePage}/>
-                                                                <SideDialogs/>
-                                                            </Scaffold>
-                                                        );
-                                                    }
-                                                }
-                    
-                                                return (
-                                                    <ThemeProvider theme={theme}>
-                                                        <CssBaseline/>
-                                                        {component}
-                                                    </ThemeProvider>
-                                                );
-                                            }}
-                                        </FireCMS>
-                                    </ModeControllerProvider>
-                                </AuthControllerContext.Provider>
-                            </DataSourceContext.Provider>
-                        </StorageSourceContext.Provider>
-                </FirebaseAppContext.Provider>
+                                            notAllowedError={notAllowedError}/>
+                                    );
+                                } else {
+                                    component = (
+                                        <Scaffold
+                                            name={name}
+                                            logo={usedLogo}
+                                            toolbarExtraWidget={toolbarExtraWidget}>
+                                            <NavigationRoutes
+                                                HomePage={HomePage}/>
+                                            <SideDialogs/>
+                                        </Scaffold>
+                                    );
+                                }
+                            }
+
+                            return (
+                                <ThemeProvider theme={theme}>
+                                    <CssBaseline/>
+                                    {component}
+                                </ThemeProvider>
+                            );
+                        }}
+                    </FireCMS>
+                </ModeControllerProvider>
             </SnackbarProvider>
         </BrowserRouter>
     );
